@@ -1,17 +1,21 @@
 package com.johnfuetsch.android.twitter.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 public class Tweet {
 	
 	public String id;
 	public String text;
 	public User user;
+	public long created;
 	
+	@SuppressWarnings("deprecation")
 	public static Tweet fromJson(JSONObject jsonObject) {
 		Tweet tweet = new Tweet();
 		// Deserialize json into object fields
@@ -19,6 +23,7 @@ public class Tweet {
 			tweet.id = jsonObject.getString("id_str");
 			tweet.text = jsonObject.getString("text");
 			tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+			tweet.created = Date.parse(jsonObject.getString("created_at"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
