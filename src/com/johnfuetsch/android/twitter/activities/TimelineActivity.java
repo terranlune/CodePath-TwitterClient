@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.johnfuetsch.android.twitter.EndlessScrollListener;
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.adapters.TweetsAdapter;
@@ -59,6 +60,7 @@ public class TimelineActivity extends Activity {
 	public static class PlaceholderFragment extends Fragment {
 
 		private ListView lvTweets;
+		private TweetsAdapter tweetsAdapter;
 
 		public PlaceholderFragment() {
 		}
@@ -66,22 +68,50 @@ public class TimelineActivity extends Activity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			
+
 			View rootView = inflater.inflate(R.layout.fragment_timeline,
 					container, false);
-			
+
 			lvTweets = (ListView) rootView.findViewById(R.id.lvTweets);
 
-			TwitterClientApp.getRestClient().getHomeTimeline(new JsonHttpResponseHandler() {
+			ArrayList<Tweet> tweets = new ArrayList<Tweet>();
+			tweetsAdapter = new TweetsAdapter(getActivity(), tweets);
+			lvTweets.setAdapter(tweetsAdapter);
+
+			lvTweets.setOnScrollListener(new EndlessScrollListener(10) {
 				@Override
-				public void onSuccess(JSONArray jsonTweets) {
-					ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
-					TweetsAdapter adapter = new TweetsAdapter(getActivity(), tweets);
-					lvTweets.setAdapter(adapter);
+				public void onLoadMore(int page, int totalItemsCount) {
+
+					String maxId = null;
+					if (tweetsAdapter.getCount() > 0) {
+						Tweet oldestTweet = tweetsAdapter.getItem(tweetsAdapter
+								.getCount() - 1);
+						maxId = oldestTweet.id;
+					}
+
+					loadData(null, maxId);
+
 				}
 			});
-			
+
+			loadData(null, null);
+
 			return rootView;
+		}
+
+		public void loadData(String sinceId, String maxId) {
+
+			TwitterClientApp.getRestClient().getHomeTimeline(sinceId, maxId,
+					new JsonHttpResponseHandler() {
+
+						@Override
+						public void onSuccess(JSONArray jsonTweets) {
+
+							ArrayList<Tweet> tweets = Tweet
+									.fromJson(jsonTweets);
+							tweetsAdapter.addAll(tweets);
+						}
+					});
 		}
 	}
 
