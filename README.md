@@ -20,9 +20,9 @@ Completed user stories:
 
 Screenshots:
 
-!(http://i.imgur.com/wKVqTM1l.png)
-!(http://i.imgur.com/Itshsgil.png)
-!(http://i.imgur.com/Ekx3PVJl.png)
-!(http://i.imgur.com/xQCJvpIl.png)
-!(http://i.imgur.com/sN3iC25l.png)
-!(http://i.imgur.com/vh5SjoTl.png)
+![Initial timeline view](http://i.imgur.com/wKVqTM1l.png)
+![Initial compose view](http://i.imgur.com/Itshsgil.png)
+![In progress compose](http://i.imgur.com/Ekx3PVJl.png)
+![Timeline post compose](http://i.imgur.com/xQCJvpIl.png)
+![Pull to refresh](http://i.imgur.com/sN3iC25l.png)
+![Timeline post refresh](http://i.imgur.com/vh5SjoTl.png)
