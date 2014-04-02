@@ -2,4 +2,6 @@
 <resources>
     <color name="user_screen_name">#999999</color>
     <color name="tweet_timestamp">#999999</color>
+    <color name="actionbar_bg">#00acee</color>
+    <color name="actionbar_fg">#99ddf8</color>
 </resources>

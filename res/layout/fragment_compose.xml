@@ -10,11 +10,11 @@
    
     <ImageView
         android:id="@+id/ivComposeUserProfileImage"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:padding="5dp" />
+        android:paddingRight="5dp" />
 
     <TextView
         android:id="@+id/tvComposeUserName"
@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivComposeUserProfileImage"
         android:layout_alignTop="@+id/ivComposeUserProfileImage"
+        android:paddingTop="5dp"
         android:textSize="16sp"
         android:textStyle="bold" />
 

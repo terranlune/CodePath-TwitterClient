@@ -1,21 +1,13 @@
 package com.johnfuetsch.android.twitter.activities;
 
-import org.json.JSONObject;
-
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import com.codepath.oauth.OAuthLoginActivity;
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClient;
-import com.johnfuetsch.android.twitter.TwitterClientApp;
-import com.johnfuetsch.android.twitter.models.User;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
 
@@ -36,6 +28,7 @@ public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
     @Override
     public void onLoginSuccess() {
     	 Intent i = new Intent(this, TimelineActivity.class);
+    	 i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
     	 startActivity(i);
     }
     
