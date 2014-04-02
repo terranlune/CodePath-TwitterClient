@@ -13,11 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
+import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -26,6 +30,9 @@ public class ComposeFragment extends Fragment {
 
 	private EditText etTweetText;
 	private OnComposeTextEdited mCallback;
+	private TextView tvComposeUserName;
+	private TextView tvComposeUserScreenName;
+	private ImageView ivComposeUserProfileImage;
 
 	public ComposeFragment() {
 	}
@@ -73,6 +80,30 @@ public class ComposeFragment extends Fragment {
 			public void afterTextChanged(Editable s) {
 				mCallback.onCharCountUpdated(140 - s.length());
 			}});
+		
+		tvComposeUserName = (TextView) rootView.findViewById(R.id.tvComposeUserName);
+		tvComposeUserScreenName = (TextView) rootView.findViewById(R.id.tvComposeUserScreenName);
+		ivComposeUserProfileImage = (ImageView) rootView.findViewById(R.id.ivComposeUserProfileImage);
+		TwitterClientApp.getRestClient().verifyCredentials(
+				new JsonHttpResponseHandler() {
+
+					@Override
+					public void onSuccess(JSONObject jsonUser) {
+						User user = User.fromJson(jsonUser);
+						tvComposeUserName.setText(user.name);
+						tvComposeUserScreenName.setText("@" + user.screen_name);
+
+						ImageLoader.getInstance().displayImage(user.profile_image_url,
+								ivComposeUserProfileImage);
+					}
+
+					@Override
+					public void onFailure(Throwable e, JSONObject error) {
+						super.onFailure(e, error);
+						e.printStackTrace();
+						Log.e("ComposeFragment", error.toString());
+					}
+				});
 		
 		return rootView;
 	}

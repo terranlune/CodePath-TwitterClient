@@ -14,8 +14,7 @@
         android:layout_height="35dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:padding="5dp"
-        android:src="@drawable/ic_launcher" />
+        android:padding="5dp" />
 
     <TextView
         android:id="@+id/tvComposeUserName"
@@ -23,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivComposeUserProfileImage"
         android:layout_alignTop="@+id/ivComposeUserProfileImage"
-        android:text="@string/tv_sample_user_name"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -33,7 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvComposeUserName"
         android:layout_below="@+id/tvComposeUserName"
-        android:text="@string/tv_sample_user_screen_name"
         android:textColor="@color/user_screen_name"
         android:textSize="12sp" />
 

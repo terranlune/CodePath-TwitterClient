@@ -2,14 +2,22 @@ package com.johnfuetsch.android.twitter.activities;
 
 
 
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.johnfuetsch.android.twitter.R;
+import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.TimelineFragment;
+import com.johnfuetsch.android.twitter.models.User;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class TimelineActivity extends Activity {
 
@@ -24,6 +32,25 @@ public class TimelineActivity extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new TimelineFragment()).commit();
 		}
+		
+		TwitterClientApp.getRestClient().verifyCredentials(
+				new JsonHttpResponseHandler() {
+
+					@Override
+					public void onSuccess(JSONObject jsonUser) {
+						User user = User.fromJson(jsonUser);
+						TimelineActivity.this.setTitle("@" + user.screen_name);
+					}
+
+					@Override
+					public void onFailure(Throwable e, JSONObject error) {
+						super.onFailure(e, error);
+						e.printStackTrace();
+						Log.e("TimelineActivity", error.toString());
+					}
+				});
+    	
+		
 	}
 
 	@Override
@@ -40,9 +67,6 @@ public class TimelineActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
 		if (id == R.id.action_compose) {
 			Intent intent = new Intent(this, ComposeActivity.class);
 			startActivityForResult(intent, ACTION_COMPOSE);
