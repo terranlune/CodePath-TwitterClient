@@ -3,13 +3,16 @@ package com.johnfuetsch.android.twitter.fragments;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.johnfuetsch.android.twitter.EndlessScrollListener;
 import com.johnfuetsch.android.twitter.R;
@@ -74,6 +77,14 @@ public class TimelineFragment extends Fragment {
 						ArrayList<Tweet> tweets = Tweet
 								.fromJson(jsonTweets);
 						tweetsAdapter.addAll(tweets);
+					}
+
+					@Override
+					public void onFailure(Throwable e, JSONObject error) {
+						super.onFailure(e, error);
+						Toast.makeText(getActivity(), "Error getting timeline", Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
+						Log.e("TimelineFragment", error.toString());
 					}
 				});
 	}
