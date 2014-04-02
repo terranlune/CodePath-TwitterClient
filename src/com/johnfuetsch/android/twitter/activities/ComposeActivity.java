@@ -14,6 +14,7 @@ public class ComposeActivity extends Activity implements
 		ComposeFragment.OnComposeTextEdited {
 
 	private TextView tvCharCount;
+	private int charCount = 140;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,18 @@ public class ComposeActivity extends Activity implements
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putInt("charCount", charCount);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		charCount = savedInstanceState.getInt("charCount");
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -37,7 +50,7 @@ public class ComposeActivity extends Activity implements
 		LinearLayout actionView = (LinearLayout) menuItem.getActionView();
 		tvCharCount = (TextView) actionView.findViewById(R.id.tvCharCount);
 
-		onCharCountUpdated(140);
+		onCharCountUpdated(charCount);
 
 		return true;
 	}
@@ -59,8 +72,9 @@ public class ComposeActivity extends Activity implements
 
 	@Override
 	public void onCharCountUpdated(int count) {
+		charCount = count;
 		if (tvCharCount != null) {
-			tvCharCount.setText(Integer.toString(count));
+			tvCharCount.setText(Integer.toString(charCount));
 		}
 	}
 
