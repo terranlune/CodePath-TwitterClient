@@ -1,10 +1,17 @@
 package com.johnfuetsch.android.twitter.models;
 
+import java.io.Serializable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User {
+public class User implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6682876873706217360L;
+	
 	public String id;
 	public String name;
 	public String profile_image_url;

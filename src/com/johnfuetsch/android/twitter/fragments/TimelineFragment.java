@@ -115,6 +115,14 @@ public class TimelineFragment extends Fragment {
 		}
 	}
 	
+	public void onPostTweet(Tweet tweet) {
+		tweetsAdapter.insert(tweet, 0);
+		if (tweetsAdapter.getCount() > 1) {
+			Tweet latestTweet = tweetsAdapter.getItem(1);
+			insertData(latestTweet.id, tweet.id, 1);
+		}
+	}
+	
 	public void insertData(String sinceId, String maxId, int position) {
 
 		

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
+import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -67,7 +68,6 @@ public class ComposeFragment extends Fragment {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
 				
 			}
 
@@ -119,8 +119,8 @@ public class ComposeFragment extends Fragment {
 						Log.d("tweetSuccess", jsonTweet.toString());
 
 						Intent intent = new Intent();
-						// TODO: Send Tweet directly
-						intent.putExtra("jsonTweet", jsonTweet.toString());
+						Tweet tweet = Tweet.fromJson(jsonTweet);
+						intent.putExtra("tweet", tweet);
 
 						Activity activity = getActivity();
 						activity.setResult(Activity.RESULT_OK, intent);

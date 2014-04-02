@@ -1,5 +1,6 @@
 package com.johnfuetsch.android.twitter.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,7 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Tweet {
+public class Tweet implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6263668194545871825L;
 	
 	public String id;
 	public String text;

@@ -6,9 +6,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +14,7 @@ import android.view.MenuItem;
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.TimelineFragment;
+import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -81,9 +80,10 @@ public class TimelineActivity extends Activity {
 		
 		if (requestCode == ACTION_COMPOSE) {
 			if (resultCode == RESULT_OK) {
-				// TODO: Inject posted tweet
-				String jsonTweet = data.getStringExtra("jsonTweet");
-				// TODO: Fill in any tweets between the latest one we knew about, and the one we just inserted
+				Tweet tweet = (Tweet) data.getSerializableExtra("tweet");
+				
+				TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager().findFragmentById(R.id.container);
+				timelineFragment.onPostTweet(tweet);
 			}
 		}
 		
