@@ -44,7 +44,8 @@
         android:layout_alignLeft="@+id/ivComposeUserProfileImage"
         android:layout_below="@+id/ivComposeUserProfileImage"
         android:hint="@string/compose_hint"
-        android:inputType="textCapSentences"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="140"
         android:paddingTop="5dp"
         android:textSize="18sp" />
     

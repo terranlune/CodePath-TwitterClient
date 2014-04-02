@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.johnfuetsch.android.twitter.ComposeActivity" >
 
+    <item android:id="@+id/action_char_count"
+        android:showAsAction="always"
+        android:actionLayout="@+layout/action_char_count" />
+    
     <item
         android:id="@+id/action_tweet"
         android:showAsAction="always"

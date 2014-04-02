@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,26 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class ComposeFragment extends Fragment {
 
 	private EditText etTweetText;
+	private OnComposeTextEdited mCallback;
 
 	public ComposeFragment() {
+	}
+
+	public interface OnComposeTextEdited {
+		public void onCharCountUpdated(int count);
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		try {
+			mCallback = (OnComposeTextEdited) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnComposeTextEdited");
+		}
+	
 	}
 
 	@Override
@@ -35,34 +55,53 @@ public class ComposeFragment extends Fragment {
 		
 		etTweetText = (EditText) rootView.findViewById(R.id.etComposeTweetText);
 		
+		etTweetText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				mCallback.onCharCountUpdated(140 - s.length());
+			}});
+		
 		return rootView;
 	}
 	
 	public void onTweet() {
 		String status = etTweetText.getText().toString();
-		
 
-		TwitterClientApp.getRestClient().postStatusUpdate(status, 
+		TwitterClientApp.getRestClient().postStatusUpdate(status,
 				new JsonHttpResponseHandler() {
 
 					@Override
 					public void onSuccess(JSONObject jsonTweet) {
 						Log.d("tweetSuccess", jsonTweet.toString());
-						
+
 						Intent intent = new Intent();
 						// TODO: Send Tweet directly
 						intent.putExtra("jsonTweet", jsonTweet.toString());
-						
+
 						Activity activity = getActivity();
 						activity.setResult(Activity.RESULT_OK, intent);
-						activity.finish();						
+						activity.finish();
 
 					}
-					
+
 					@Override
 					public void onFailure(Throwable e, JSONObject error) {
 						super.onFailure(e, error);
-						Toast.makeText(getActivity(), "Error posting tweet", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), "Error posting tweet",
+								Toast.LENGTH_SHORT).show();
 						e.printStackTrace();
 						Log.e("ComposeFragment", error.toString());
 					}
