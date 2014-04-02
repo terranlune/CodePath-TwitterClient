@@ -57,8 +57,9 @@ public class TimelineActivity extends Activity {
 		
 		if (requestCode == ACTION_COMPOSE) {
 			if (resultCode == RESULT_OK) {
-				// TODO: Refresh and ensure tweet is visible
+				// TODO: Inject posted tweet
 				String jsonTweet = data.getStringExtra("jsonTweet");
+				// TODO: Fill in any tweets between the latest one we knew about, and the one we just inserted
 			}
 		}
 		
