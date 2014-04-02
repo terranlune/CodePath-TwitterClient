@@ -47,6 +47,11 @@
             android:name="com.johnfuetsch.android.twitter.activities.TimelineActivity"
             android:label="@string/title_activity_timeline" >
         </activity>
+        <activity
+            android:name="com.johnfuetsch.android.twitter.activities.ComposeActivity"
+            android:label="@string/title_activity_compose"
+            android:windowSoftInputMode="stateVisible" >
+        </activity>
     </application>
 
 </manifest>
