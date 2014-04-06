@@ -14,5 +14,6 @@
     <string name="title_activity_compose">Compose</string>
     <string name="hello_world">Hello world!</string>
     <string name="compose_hint">What\'s happening?</string>
+    <string name="loading">Loading more ...</string>
 
 </resources>

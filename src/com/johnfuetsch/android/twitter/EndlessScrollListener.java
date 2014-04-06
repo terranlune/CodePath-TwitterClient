@@ -13,7 +13,7 @@ public abstract class EndlessScrollListener implements OnScrollListener {
 	// The total number of items in the dataset after the last load
 	private int previousTotalItemCount = 0;
 	// True if we are still waiting for the last set of data to load.
-	private boolean loading = true;
+	public boolean loading = true;
 	// Sets the starting page index
 	private int startingPageIndex = 0;
 
@@ -50,8 +50,7 @@ public abstract class EndlessScrollListener implements OnScrollListener {
 
 		// If itÕs still loading, we check to see if the dataset count has
 		// changed, if so we conclude it has finished loading and update the
-		// current page
-		// number and total item count.
+		// current page number and total item count.
 		if (loading && (totalItemCount > previousTotalItemCount)) {
 			loading = false;
 			previousTotalItemCount = totalItemCount;
@@ -64,15 +63,30 @@ public abstract class EndlessScrollListener implements OnScrollListener {
 		// fetch the data.
 		if (!loading
 				&& firstVisibleItem + visibleItemCount + visibleThreshold > totalItemCount) {
-			// if (!loading && (totalItemCount -
-			// visibleItemCount)<=(firstVisibleItem + visibleThreshold)) {
 			loading = true;
-			onLoadMore(currentPage, totalItemCount);
+			boolean loadingMore = onLoadMore(currentPage, totalItemCount);
+			if (!loadingMore) {
+				loading = false;
+			}
+		}
+
+		// If any of the items in visible threshold represent holes in the data,
+		// then fill them in
+		if (!loading) {
+			loading = true;
+			int maxItem = Math.min(firstVisibleItem
+					+ visibleItemCount + visibleThreshold, totalItemCount-1);
+			boolean foundAHole = fillInHoles(firstVisibleItem, maxItem);
+			if (!foundAHole) {
+				loading = false;
+			}
 		}
 	}
 
+	public abstract boolean fillInHoles(int minPosition, int maxPosition);
+	
 	// Defines the process for actually loading more data based on page
-	public abstract void onLoadMore(int page, int totalItemsCount);
+	public abstract boolean onLoadMore(int page, int totalItemsCount);
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {

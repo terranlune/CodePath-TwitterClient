@@ -22,6 +22,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		TextView tvTweetText;
 		TextView tvTweetTimestamp;
 		ImageView ivUserProfileImage;
+		View vHoleInData;
 	}
 
 	public TweetsAdapter(Context context, ArrayList<Tweet> tweets) {
@@ -50,6 +51,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 					.findViewById(R.id.tvTweetTimestamp);
 			viewLookupCache.ivUserProfileImage = (ImageView) convertView
 					.findViewById(R.id.ivUserProfileImage);
+			viewLookupCache.vHoleInData = (View) convertView.findViewById(R.id.lHoleInData);
 			convertView.setTag(viewLookupCache);
 		} else {
 			viewLookupCache = (ViewLookupCache) convertView.getTag();
@@ -62,6 +64,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		viewLookupCache.tvUserScreenName.setText("@" + tweet.user.screen_name);
 		ImageLoader.getInstance().displayImage(tweet.user.profile_image_url,
 				viewLookupCache.ivUserProfileImage);
+		viewLookupCache.vHoleInData.setVisibility(tweet.holeInData ? View.VISIBLE : View.GONE);
 
 		// Return the completed view to render on screen
 		return convertView;
