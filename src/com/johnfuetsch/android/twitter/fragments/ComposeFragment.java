@@ -52,23 +52,29 @@ public class ComposeFragment extends Fragment {
 			throw new ClassCastException(activity.toString()
 					+ " must implement OnComposeTextEdited");
 		}
+
+	}
 	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallback = null;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_compose,
-				container, false);
-		
+		View rootView = inflater.inflate(R.layout.fragment_compose, container,
+				false);
+
 		etTweetText = (EditText) rootView.findViewById(R.id.etComposeTweetText);
-		
+
 		etTweetText.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				
+
 			}
 
 			@Override
@@ -78,12 +84,18 @@ public class ComposeFragment extends Fragment {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				mCallback.onCharCountUpdated(140 - s.length());
-			}});
-		
-		tvComposeUserName = (TextView) rootView.findViewById(R.id.tvComposeUserName);
-		tvComposeUserScreenName = (TextView) rootView.findViewById(R.id.tvComposeUserScreenName);
-		ivComposeUserProfileImage = (ImageView) rootView.findViewById(R.id.ivComposeUserProfileImage);
+				if (mCallback != null) {
+					mCallback.onCharCountUpdated(140 - s.length());
+				}
+			}
+		});
+
+		tvComposeUserName = (TextView) rootView
+				.findViewById(R.id.tvComposeUserName);
+		tvComposeUserScreenName = (TextView) rootView
+				.findViewById(R.id.tvComposeUserScreenName);
+		ivComposeUserProfileImage = (ImageView) rootView
+				.findViewById(R.id.ivComposeUserProfileImage);
 		TwitterClientApp.getRestClient().verifyCredentials(
 				new JsonHttpResponseHandler() {
 
@@ -93,7 +105,8 @@ public class ComposeFragment extends Fragment {
 						tvComposeUserName.setText(user.name);
 						tvComposeUserScreenName.setText("@" + user.screen_name);
 
-						ImageLoader.getInstance().displayImage(user.profile_image_url,
+						ImageLoader.getInstance().displayImage(
+								user.profile_image_url,
 								ivComposeUserProfileImage);
 					}
 
@@ -104,10 +117,10 @@ public class ComposeFragment extends Fragment {
 						Log.e("ComposeFragment", error.toString());
 					}
 				});
-		
+
 		return rootView;
 	}
-	
+
 	public void onTweet() {
 		String status = etTweetText.getText().toString();
 
