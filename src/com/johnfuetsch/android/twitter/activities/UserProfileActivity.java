@@ -1,18 +1,13 @@
 package com.johnfuetsch.android.twitter.activities;
 
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.johnfuetsch.android.twitter.R;
-import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.UserTimelineFragment;
 import com.johnfuetsch.android.twitter.models.User;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class UserProfileActivity extends Activity {
@@ -36,35 +31,17 @@ public class UserProfileActivity extends Activity {
 		tvFollowingCount = (TextView) findViewById(R.id.tvFollowingCount);
 		tvFollowersCount = (TextView) findViewById(R.id.tvFollowersCount);
 
-		if (savedInstanceState == null) {
-			loadData();
-		}
-	}
+		User user = (User) getIntent().getSerializableExtra("user");
 
-	private void loadData() {
-		TwitterClientApp.getRestClient().verifyCredentials(
-				new JsonHttpResponseHandler() {
+		setHeaderInfo(user);
 
-					@Override
-					public void onSuccess(JSONObject jsonUser) {
-						User user = User.fromJson(jsonUser);
-						setHeaderInfo(user);
-
-						// Load the timeline
-						getFragmentManager()
-								.beginTransaction()
-								.add(R.id.container,
-										UserTimelineFragment.newInstance(user))
-								.commit();
-					}
-
-					@Override
-					public void onFailure(Throwable e, JSONObject error) {
-						super.onFailure(e, error);
-						e.printStackTrace();
-						Log.e("UserProfileActivity", error.toString());
-					}
-				});
+		// Load the timeline
+		getFragmentManager()
+				.beginTransaction()
+				.add(R.id.container,
+						UserTimelineFragment.newInstance(user))
+				.commit();
+		
 	}
 
 	private void setHeaderInfo(User user) {

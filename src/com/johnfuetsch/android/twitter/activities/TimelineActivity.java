@@ -27,6 +27,7 @@ public class TimelineActivity extends Activity implements TabListener {
 	private Tweet onPostTweet = null;
 	private HomeTimelineFragment timelineFragment;
 	private MentionsFragment mentionsFragment;
+	private User loggedInUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +80,9 @@ public class TimelineActivity extends Activity implements TabListener {
 
 					@Override
 					public void onSuccess(JSONObject jsonUser) {
-						User user = User.fromJson(jsonUser);
-						TimelineActivity.this.setTitle("@" + user.screen_name);
+						loggedInUser = User.fromJson(jsonUser);
+						TimelineActivity.this.setTitle("@"
+								+ loggedInUser.screen_name);
 					}
 
 					@Override
@@ -110,10 +112,12 @@ public class TimelineActivity extends Activity implements TabListener {
 			Intent intent = new Intent(this, ComposeActivity.class);
 			startActivityForResult(intent, ACTION_COMPOSE);
 			return true;
-		}
-		else if (id == R.id.action_profile) {
-			Intent intent = new Intent(this, UserProfileActivity.class);
-			startActivity(intent);
+		} else if (id == R.id.action_profile) {
+			if (loggedInUser != null) {
+				Intent intent = new Intent(this, UserProfileActivity.class);
+				intent.putExtra("user", loggedInUser);
+				startActivity(intent);
+			}
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

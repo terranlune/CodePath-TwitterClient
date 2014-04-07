@@ -3,14 +3,17 @@ package com.johnfuetsch.android.twitter.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.johnfuetsch.android.twitter.R;
+import com.johnfuetsch.android.twitter.activities.UserProfileActivity;
 import com.johnfuetsch.android.twitter.models.Tweet;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -66,6 +69,17 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 				viewLookupCache.ivUserProfileImage);
 		viewLookupCache.vHoleInData.setVisibility(tweet.holeInData ? View.VISIBLE : View.GONE);
 
+		viewLookupCache.ivUserProfileImage.setTag(tweet);
+		viewLookupCache.ivUserProfileImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Tweet tweet = (Tweet) v.getTag();
+				Intent intent = new Intent(v.getContext(), UserProfileActivity.class);
+				intent.putExtra("user", tweet.user);
+				v.getContext().startActivity(intent);
+			}});
+		
 		// Return the completed view to render on screen
 		return convertView;
 	}
