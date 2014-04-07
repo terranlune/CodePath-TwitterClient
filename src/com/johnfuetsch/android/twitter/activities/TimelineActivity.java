@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.MentionsFragment;
-import com.johnfuetsch.android.twitter.fragments.TimelineFragment;
+import com.johnfuetsch.android.twitter.fragments.HomeTimelineFragment;
 import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -25,7 +25,7 @@ public class TimelineActivity extends Activity implements TabListener {
 
 	private static final int ACTION_COMPOSE = 0;
 	private Tweet onPostTweet = null;
-	private TimelineFragment timelineFragment;
+	private HomeTimelineFragment timelineFragment;
 	private MentionsFragment mentionsFragment;
 
 	@Override
@@ -111,6 +111,11 @@ public class TimelineActivity extends Activity implements TabListener {
 			startActivityForResult(intent, ACTION_COMPOSE);
 			return true;
 		}
+		else if (id == R.id.action_profile) {
+			Intent intent = new Intent(this, UserProfileActivity.class);
+			startActivity(intent);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -132,7 +137,7 @@ public class TimelineActivity extends Activity implements TabListener {
 		String tag = (String) tab.getTag();
 		if (tag.equals("TimelineFragment")) {
 			if (timelineFragment == null) {
-				timelineFragment = new TimelineFragment();
+				timelineFragment = new HomeTimelineFragment();
 				ft.add(R.id.container, timelineFragment);
 			} else {
 				ft.attach(timelineFragment);

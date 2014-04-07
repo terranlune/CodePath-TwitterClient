@@ -9,7 +9,7 @@ import com.johnfuetsch.android.twitter.models.Tweet;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class TimelineFragment extends TweetListFragment {
+public class HomeTimelineFragment extends TweetListFragment {
 
 
 	public void onPostTweet(Tweet tweet) {

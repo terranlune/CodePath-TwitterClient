@@ -44,10 +44,33 @@ public class TwitterClient extends OAuthBaseClient {
 			AsyncHttpResponseHandler handler) {
 		getTimeline("statuses/mentions_timeline.json", sinceId, maxId, handler);
 	}
+	
+	public void getUserTimeline(String screenName, String sinceId, String maxId,
+			AsyncHttpResponseHandler handler) {
+		
+		RequestParams args = getTimelineParams(sinceId, maxId);
+		args.put("screen_name", screenName);
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
 
+		Log.e("TwitterClient",
+				AsyncHttpClient.getUrlWithQueryString(apiUrl, args));
+
+		client.get(apiUrl, args, handler);
+	}
+	
 	private void getTimeline(String endpoint, String sinceId, String maxId,
 			AsyncHttpResponseHandler handler) {
+		
+		RequestParams args = getTimelineParams(sinceId, maxId);
+		String apiUrl = getApiUrl(endpoint);
 
+		Log.e("TwitterClient",
+				AsyncHttpClient.getUrlWithQueryString(apiUrl, args));
+
+		client.get(apiUrl, args, handler);
+	}
+
+	private RequestParams getTimelineParams(String sinceId, String maxId) {
 		// max_id is inclusive. Subtract one to make it exclusive
 		if (maxId != null) {
 			maxId = Long.toString(Long.parseLong(maxId) - 1);
@@ -57,13 +80,7 @@ public class TwitterClient extends OAuthBaseClient {
 		args.put("count", "50");
 		args.put("since_id", sinceId);
 		args.put("max_id", maxId);
-
-		String apiUrl = getApiUrl(endpoint);
-
-		Log.e("TwitterClient",
-				AsyncHttpClient.getUrlWithQueryString(apiUrl, args));
-
-		client.get(apiUrl, args, handler);
+		return args;
 	}
 
 	public void postStatusUpdate(String status, AsyncHttpResponseHandler handler) {
