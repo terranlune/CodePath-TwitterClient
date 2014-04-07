@@ -15,5 +15,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="compose_hint">What\'s happening?</string>
     <string name="loading">Loading more ...</string>
+    <string name="empty_list">No items</string>
 
 </resources>

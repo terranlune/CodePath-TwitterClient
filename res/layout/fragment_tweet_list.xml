@@ -6,7 +6,16 @@
 
     <eu.erikw.PullToRefreshListView
         android:id="@+id/lvTweets"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
+    
+    <TextView
+        android:id="@+id/vEmptyList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/empty_list"
+        android:visibility="gone" />
+    
 </RelativeLayout>

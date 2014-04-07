@@ -76,14 +76,11 @@ public abstract class EndlessScrollListener implements OnScrollListener {
 			loading = true;
 			int maxItem = Math.min(firstVisibleItem
 					+ visibleItemCount + visibleThreshold, totalItemCount-1);
-			boolean foundAHole = fillInHoles(firstVisibleItem, maxItem);
-			if (!foundAHole) {
-				loading = false;
-			}
+			loading = onLoadItems(firstVisibleItem, maxItem);
 		}
 	}
 
-	public abstract boolean fillInHoles(int minPosition, int maxPosition);
+	public abstract boolean onLoadItems(int minPosition, int maxPosition);
 	
 	// Defines the process for actually loading more data based on page
 	public abstract boolean onLoadMore(int page, int totalItemsCount);
