@@ -151,6 +151,7 @@ public abstract class TweetListFragment extends Fragment {
 		} else {
 			busy = true;
 		}
+		getActivity().setProgressBarIndeterminateVisibility(true);
 		return true;
 	}
 
@@ -158,6 +159,7 @@ public abstract class TweetListFragment extends Fragment {
 		lvTweets.onRefreshComplete();
 		scrollListener.loading = false;
 		busy = false;
+		getActivity().setProgressBarIndeterminateVisibility(false);
 	}
 
 	class TweetListResponseHandler extends JsonHttpResponseHandler {

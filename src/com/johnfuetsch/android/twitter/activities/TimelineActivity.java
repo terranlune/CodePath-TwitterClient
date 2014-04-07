@@ -12,11 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
-import com.johnfuetsch.android.twitter.fragments.MentionsFragment;
 import com.johnfuetsch.android.twitter.fragments.HomeTimelineFragment;
+import com.johnfuetsch.android.twitter.fragments.MentionsFragment;
 import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,8 +33,8 @@ public class TimelineActivity extends Activity implements TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_timeline);
-
 		setupTitle();
 		setupTabs();
 	}

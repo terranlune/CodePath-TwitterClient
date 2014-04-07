@@ -2,6 +2,7 @@ package com.johnfuetsch.android.twitter.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class UserProfileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_user_profile);
 
 		tvUserName = (TextView) findViewById(R.id.tvUserName);
