@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 public abstract class TweetListFragment extends Fragment {
 
 	protected PullToRefreshListView lvTweets;
-	private TweetsAdapter tweetsAdapter;
+	protected TweetsAdapter tweetsAdapter;
 	protected EndlessScrollListener scrollListener;
 	protected boolean busy = false;
 
@@ -44,8 +44,8 @@ public abstract class TweetListFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_tweet_list, container,
-				false);
+		View rootView = inflater.inflate(R.layout.fragment_tweet_list,
+				container, false);
 
 		lvTweets = (PullToRefreshListView) rootView.findViewById(R.id.lvTweets);
 
@@ -59,12 +59,9 @@ public abstract class TweetListFragment extends Fragment {
 		scrollListener = new EndlessScrollListener(10) {
 			@Override
 			public boolean onLoadMore(int page, int totalItemsCount) {
-				// Only load more if we're already showing stuff
-				if (tweetsAdapter.getCount() > 0) {
-					return loadOlderData();
-				} else {
-					return false;
-				}
+				// onLoadItems handles more cases (such as a really short
+				// results list) so just use that
+				return false;
 			}
 
 			@Override
@@ -89,17 +86,13 @@ public abstract class TweetListFragment extends Fragment {
 		return rootView;
 	}
 
-	public void onPostTweet(Tweet tweet) {
-		tweet.holeInData = true;
-		tweetsAdapter.insert(tweet, 0);
-	}
+	abstract protected void loadData(String sinceId, String maxId,
+			int insertPosition);
 
-	abstract protected void insertData(String sinceId, String maxId, int position);
-	
 	public boolean loadOlderData() {
 		Tweet oldestTweet = tweetsAdapter.getItem(tweetsAdapter.getCount() - 1);
 		String maxId = oldestTweet.id;
-		insertData(null, maxId, tweetsAdapter.getCount());
+		loadData(null, maxId, tweetsAdapter.getCount());
 		return true;
 	}
 
@@ -109,7 +102,7 @@ public abstract class TweetListFragment extends Fragment {
 			Tweet latestTweet = tweetsAdapter.getItem(0);
 			latestId = latestTweet.id;
 		}
-		insertData(latestId, null, 0);
+		loadData(latestId, null, 0);
 	}
 
 	private boolean fillInHoles(int minPosition, int maxPosition) {
@@ -121,7 +114,7 @@ public abstract class TweetListFragment extends Fragment {
 					Tweet olderTweet = (Tweet) tweetsAdapter.getItem(i + 1);
 					olderTweetId = olderTweet.id;
 				}
-				insertData(olderTweetId, tweet.id, i + 1);
+				loadData(olderTweetId, tweet.id, i + 1);
 				return true;
 			}
 		}
@@ -151,6 +144,22 @@ public abstract class TweetListFragment extends Fragment {
 		}
 	}
 
+	protected boolean getNetworkLock() {
+		if (busy) {
+			Log.e("TweetListFragment", "Busy!");
+			return false;
+		} else {
+			busy = true;
+		}
+		return true;
+	}
+
+	protected void returnNetworkLock() {
+		lvTweets.onRefreshComplete();
+		scrollListener.loading = false;
+		busy = false;
+	}
+
 	class TweetListResponseHandler extends JsonHttpResponseHandler {
 		protected int position;
 
@@ -165,22 +174,18 @@ public abstract class TweetListFragment extends Fragment {
 
 			insertTweets(tweets, position);
 
-			// Reset the progress indicators
-			lvTweets.onRefreshComplete();
-			scrollListener.loading = false;
-			busy = false;
+			returnNetworkLock();
 		}
 
 		@Override
 		public void onFailure(Throwable e, JSONObject error) {
 			super.onFailure(e, error);
 			ToastErrors.toastErrors(getActivity(), error,
-					"Error loading timeline");
+					"Error loading tweets");
 			e.printStackTrace();
-			Log.e("TimelineFragment", error.toString());
-			lvTweets.onRefreshComplete();
-			scrollListener.loading = false;
-			busy = false;
+			Log.e("TweetListFragment", error.toString());
+
+			returnNetworkLock();
 		}
 
 	}

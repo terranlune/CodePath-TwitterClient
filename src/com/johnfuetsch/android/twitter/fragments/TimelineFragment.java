@@ -3,6 +3,7 @@ package com.johnfuetsch.android.twitter.fragments;
 import android.util.Log;
 
 import com.johnfuetsch.android.twitter.TwitterClientApp;
+import com.johnfuetsch.android.twitter.models.Tweet;
 
 
 /**
@@ -10,21 +11,20 @@ import com.johnfuetsch.android.twitter.TwitterClientApp;
  */
 public class TimelineFragment extends TweetListFragment {
 
-	public TimelineFragment() {
+
+	public void onPostTweet(Tweet tweet) {
+		tweet.holeInData = true;
+		tweetsAdapter.insert(tweet, 0);
 	}
+	
+	public void loadData(String sinceId, String maxId, int insertPosition) {
 
-	public void insertData(String sinceId, String maxId, int position) {
-
-		Log.e("TimelineFragment", "insertData at position " + position
+		Log.e("TimelineFragment", "insertData at position " + insertPosition
 				+ " (sinceid: " + sinceId + " maxId:" + maxId + ")");
-		if (busy) {
-			Log.e("TimelineFragment", "Busy - aborting");
-			return;
-		} else {
-			busy = true;
-		}
+		
+		if (!getNetworkLock()) return;
 
 		TwitterClientApp.getRestClient().getHomeTimeline(sinceId, maxId,
-				new TweetListResponseHandler(position));
+				new TweetListResponseHandler(insertPosition));
 	}
 }

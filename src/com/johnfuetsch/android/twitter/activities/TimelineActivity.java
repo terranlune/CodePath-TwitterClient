@@ -17,7 +17,6 @@ import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.MentionsFragment;
 import com.johnfuetsch.android.twitter.fragments.TimelineFragment;
-import com.johnfuetsch.android.twitter.fragments.TweetListFragment;
 import com.johnfuetsch.android.twitter.helpers.FragmentTabListener;
 import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
@@ -26,22 +25,30 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class TimelineActivity extends Activity {
 
 	private static final int ACTION_COMPOSE = 0;
+	private Tweet onPostTweet = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_timeline);
-
-//		if (savedInstanceState == null) {
-//			getFragmentManager().beginTransaction()
-//					.add(R.id.container, new TimelineFragment()).commit();
-//		}
 		
 		setupTitle();
 		setupTabs();
+		handleOnPostTweet();
 		
 	}
 
+	private void handleOnPostTweet() {
+		if (onPostTweet != null) {
+			ActionBar actionBar = getActionBar();
+			Tab tab0 = actionBar.getTabAt(0);
+			actionBar.selectTab(tab0);
+			TimelineFragment timelineFragment = (TimelineFragment) getFragmentManager().findFragmentById(R.id.container);
+			timelineFragment.onPostTweet(onPostTweet);
+		}
+		onPostTweet = null;
+	}
+	
 	private void setupTabs() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -119,10 +126,7 @@ public class TimelineActivity extends Activity {
 		
 		if (requestCode == ACTION_COMPOSE) {
 			if (resultCode == RESULT_OK) {
-				Tweet tweet = (Tweet) data.getSerializableExtra("tweet");
-				
-				TweetListFragment timelineFragment = (TweetListFragment) getFragmentManager().findFragmentById(R.id.container);
-				timelineFragment.onPostTweet(tweet);
+				onPostTweet  = (Tweet) data.getSerializableExtra("tweet");
 			}
 		}
 		
