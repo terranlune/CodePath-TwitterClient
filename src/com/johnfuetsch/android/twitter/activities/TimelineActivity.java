@@ -143,7 +143,7 @@ public class TimelineActivity extends Activity implements TabListener {
 		if (tag.equals("TimelineFragment")) {
 			if (timelineFragment == null) {
 				timelineFragment = new HomeTimelineFragment();
-				ft.add(R.id.container, timelineFragment);
+				ft.replace(R.id.container, timelineFragment);
 			} else {
 				ft.attach(timelineFragment);
 			}
@@ -151,7 +151,7 @@ public class TimelineActivity extends Activity implements TabListener {
 		} else if (tag.equals("MentionsFragment")) {
 			if (mentionsFragment == null) {
 				mentionsFragment = new MentionsFragment();
-				ft.add(R.id.container, mentionsFragment);
+				ft.replace(R.id.container, mentionsFragment);
 			} else {
 				ft.attach(mentionsFragment);
 			}

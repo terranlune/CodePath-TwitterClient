@@ -159,7 +159,9 @@ public abstract class TweetListFragment extends Fragment {
 		lvTweets.onRefreshComplete();
 		scrollListener.loading = false;
 		busy = false;
-		getActivity().setProgressBarIndeterminateVisibility(false);
+		if (this.isAdded()) {
+			getActivity().setProgressBarIndeterminateVisibility(false);
+		}
 	}
 
 	class TweetListResponseHandler extends JsonHttpResponseHandler {
@@ -182,8 +184,10 @@ public abstract class TweetListFragment extends Fragment {
 		@Override
 		public void onFailure(Throwable e, JSONObject error) {
 			super.onFailure(e, error);
-			ToastErrors.toastErrors(getActivity(), error,
-					"Error loading tweets");
+			if (isAdded()) {
+				ToastErrors.toastErrors(getActivity(), error,
+						"Error loading tweets");
+			}
 			e.printStackTrace();
 			Log.e("TweetListFragment", error.toString());
 
