@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -18,6 +17,7 @@ import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.fragments.HomeTimelineFragment;
 import com.johnfuetsch.android.twitter.fragments.MentionsFragment;
+import com.johnfuetsch.android.twitter.helpers.ToastErrors;
 import com.johnfuetsch.android.twitter.models.Tweet;
 import com.johnfuetsch.android.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -46,7 +46,6 @@ public class TimelineActivity extends Activity implements TabListener {
 	}
 
 	private void handleOnPostTweet() {
-		Log.e("TimelineActivity", "handleOnPostTweet " + onPostTweet);
 		if (onPostTweet != null) {
 			ActionBar actionBar = getActionBar();
 			Tab tab0 = actionBar.getTabAt(0);
@@ -90,7 +89,7 @@ public class TimelineActivity extends Activity implements TabListener {
 					public void onFailure(Throwable e, JSONObject error) {
 						super.onFailure(e, error);
 						e.printStackTrace();
-						Log.e("TimelineActivity", error.toString());
+						ToastErrors.toastErrors(getBaseContext(), error, "Error loading user info");
 					}
 				});
 	}
@@ -130,7 +129,6 @@ public class TimelineActivity extends Activity implements TabListener {
 		if (requestCode == ACTION_COMPOSE) {
 			if (resultCode == RESULT_OK) {
 				onPostTweet = (Tweet) data.getSerializableExtra("tweet");
-				Log.e("TimelineActivity", "Setting onPostTweet");
 			}
 		}
 
@@ -172,7 +170,6 @@ public class TimelineActivity extends Activity implements TabListener {
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 }
