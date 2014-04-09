@@ -3,6 +3,7 @@ package com.johnfuetsch.android.twitter.controllers;
 import android.content.Context;
 
 import com.johnfuetsch.android.twitter.TwitterClientApp;
+import com.johnfuetsch.android.twitter.models.Tweet;
 
 public class HomeTimelineController extends BaseTimelineController {
 
@@ -21,4 +22,8 @@ public class HomeTimelineController extends BaseTimelineController {
 				new TweetListResponseHandler(insertPosition));
 	}
 
+	public void onPostTweet(Tweet tweet) {
+		tweet.holeInData = true;
+		tweetsAdapter.insert(tweet, 0);
+	}
 }

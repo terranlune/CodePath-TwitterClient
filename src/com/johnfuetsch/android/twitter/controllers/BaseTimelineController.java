@@ -148,9 +148,4 @@ public abstract class BaseTimelineController {
 
 	}
 
-	public void onPostTweet(Tweet tweet) {
-		tweet.holeInData = true;
-		tweetsAdapter.insert(tweet, 0);
-	}
-
 }

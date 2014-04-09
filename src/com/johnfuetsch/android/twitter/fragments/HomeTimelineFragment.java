@@ -9,13 +9,16 @@ import com.johnfuetsch.android.twitter.models.Tweet;
  */
 public class HomeTimelineFragment extends BaseTimelineFragment {
 
+	HomeTimelineController homeController;
+	
 	public void onPostTweet(Tweet tweet) {
-		controller.onPostTweet(tweet);
+		homeController.onPostTweet(tweet);
 	}
 
 	@Override
 	public void setupController() {
-		controller = new HomeTimelineController(getActivity(), this);
+		homeController = new HomeTimelineController(getActivity(), this);
+		controller = homeController;
 	}
 	
 }
