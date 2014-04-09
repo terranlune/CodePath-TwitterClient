@@ -3,6 +3,34 @@ CodePath-TwitterClient
 
 A simple twitter client implementation for http://thecodepath.com/androidbootcamp
 
+Week 2
+------
+
+Completed user stories:
+* Includes all required user stories from Week 3 Twitter Client
+* User can switch between Timeline and Mention views using tabs.
+ * User can view their home timeline tweets.
+ * User can view the recent mentions of their username.
+ * User can scroll to bottom of either of these lists and new tweets will load ("infinite scroll")
+* User can navigate to view their own profile
+ * User can see picture, tagline, # of followers, # of following, and tweets on their profile.
+* User can click on the profile image in any tweet to see another user's profile.
+ * User can see picture, tagline, # of followers, # of following, and tweets of clicked user.
+ * Profile view should include that user's timeline
+* Optional: When a network request goes out, user sees an indeterminate progress indicator
+* Optional: User can open the twitter app offline and see last loaded tweets
+ * Tweets are persisted into sqlite and can be displayed from the local DB
+
+Screenshots:
+
+![Look ma, tabs](http://i.imgur.com/mBlHmFHl.png)
+![mentions](http://i.imgur.com/An4A876l.png)
+![profile view](http://i.imgur.com/faBiAHEl.png)
+![user profile view plus loading](http://i.imgur.com/7W9HT6il.png)
+
+Week 1
+------
+
 Completed user stories:
 * User can sign in using OAuth login flow
 * User can view last 25 tweets from their home timeline
