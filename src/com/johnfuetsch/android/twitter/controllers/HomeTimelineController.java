@@ -26,6 +26,7 @@ public class HomeTimelineController extends BaseTimelineController {
 	public void onPostTweet(Tweet tweet) {
 		TimelineTweet tTweet = new TimelineTweet(tweet, getTimelineId());
 		tTweet.holeInData = true;
+		tTweet.save();
 		tTweetsAdapter.insert(tTweet, 0);
 	}
 

@@ -1,6 +1,7 @@
 package com.johnfuetsch.android.twitter.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.johnfuetsch.android.twitter.TwitterClientApp;
 import com.johnfuetsch.android.twitter.adapters.TimelineTweetsAdapter;
 import com.johnfuetsch.android.twitter.models.TimelineTweet;
@@ -20,23 +22,26 @@ public abstract class BaseTimelineController {
 	protected Context mContext;
 	protected TimelineControllerCallback mCallback;
 
-	public BaseTimelineController(Context context, TimelineControllerCallback callback) {
+	public BaseTimelineController(Context context,
+			TimelineControllerCallback callback) {
 		mContext = context;
 		mCallback = callback;
 		ArrayList<TimelineTweet> tTweets = new ArrayList<TimelineTweet>();
 		tTweetsAdapter = new TimelineTweetsAdapter(mContext, tTweets);
 	}
-	
+
 	public interface TimelineControllerCallback {
 		public void onBusyStart();
+
 		public void onBusyEnd();
+
 		public void onError(JSONObject error);
 	}
 
 	public TimelineTweetsAdapter getAdapter() {
 		return tTweetsAdapter;
 	}
-	
+
 	protected void loadData(String sinceId, String maxId, int insertPosition) {
 
 		if (!getNetworkLock())
@@ -47,8 +52,9 @@ public abstract class BaseTimelineController {
 	}
 
 	public boolean loadOlderData() {
-		TimelineTweet oldestTimelineTweet = tTweetsAdapter.getItem(tTweetsAdapter.getCount() - 1);
-		String maxId = oldestTimelineTweet.tweet.id;
+		TimelineTweet oldestTimelineTweet = tTweetsAdapter
+				.getItem(tTweetsAdapter.getCount() - 1);
+		String maxId = oldestTimelineTweet.getTweet().id;
 		loadData(null, maxId, tTweetsAdapter.getCount());
 		return true;
 	}
@@ -57,13 +63,24 @@ public abstract class BaseTimelineController {
 		String latestId = null;
 		if (tTweetsAdapter.getCount() > 0) {
 			TimelineTweet latestTimelineTweet = tTweetsAdapter.getItem(0);
-			latestId = latestTimelineTweet.tweet.id;
+			latestId = latestTimelineTweet.getTweet().id;
 		}
 		loadData(latestId, null, 0);
 	}
 
 	public void loadInitialData() {
+		retrieveData();
 		loadNewerData();
+	}
+
+	public void retrieveData() {
+
+		List<TimelineTweet> tTweets = TimelineTweet.getRecent(50,  getTimelineId());
+		for (TimelineTweet tTweet : tTweets) {
+			// Pre-fetch while we're still on the bg thread
+			tTweet.getTweet().getUser();
+		}
+		tTweetsAdapter.addAll(tTweets);
 	}
 
 	public boolean fillInHoles(int minPosition, int maxPosition) {
@@ -72,10 +89,11 @@ public abstract class BaseTimelineController {
 			if (tTweet.holeInData) {
 				String olderTweetId = null;
 				if (i + 1 < tTweetsAdapter.getCount()) {
-					TimelineTweet olderTimelineTweet = (TimelineTweet) tTweetsAdapter.getItem(i + 1);
-					olderTweetId = olderTimelineTweet.tweet.id;
+					TimelineTweet olderTimelineTweet = (TimelineTweet) tTweetsAdapter
+							.getItem(i + 1);
+					olderTweetId = olderTimelineTweet.getTweet().id;
 				}
-				loadData(olderTweetId, tTweet.tweet.id, i + 1);
+				loadData(olderTweetId, tTweet.getTweet().id, i + 1);
 				return true;
 			}
 		}
@@ -95,12 +113,15 @@ public abstract class BaseTimelineController {
 		// tweet.
 		if (tTweet != null) {
 			tTweet.holeInData = true;
+			tTweet.save();
 		}
 
 		// Since we've successfully added data after maxId, that
 		// Tweet no longer has a hole in the data
 		if (position - 1 >= 0) {
-			tTweetsAdapter.getItem(position - 1).holeInData = false;
+			tTweet = tTweetsAdapter.getItem(position - 1);
+			tTweet.holeInData = false;
+			tTweet.save();
 			tTweetsAdapter.notifyDataSetChanged();
 		}
 	}
@@ -131,7 +152,10 @@ public abstract class BaseTimelineController {
 		@Override
 		public void onSuccess(JSONArray jsonTweets) {
 
-			ArrayList<TimelineTweet> tTweets = TimelineTweet.fromJson(jsonTweets, getTimelineId());
+			ArrayList<TimelineTweet> tTweets = TimelineTweet.fromJson(
+					jsonTweets, getTimelineId());
+
+			saveTweets(tTweets);
 
 			insertTweets(tTweets, position);
 
@@ -149,4 +173,21 @@ public abstract class BaseTimelineController {
 	}
 
 	public abstract String getTimelineId();
+
+	public void saveTweets(ArrayList<TimelineTweet> tTweets) {
+
+		ActiveAndroid.beginTransaction();
+		try {
+			for (TimelineTweet tTweet : tTweets) {
+				tTweet.getTweet().getUser().save();
+				tTweet.getTweet().save();
+				tTweet.save();
+			}
+			ActiveAndroid.setTransactionSuccessful();
+		} finally {
+			ActiveAndroid.endTransaction();
+		}
+
+		//TwitterClientApp.backupDb();
+	}
 }

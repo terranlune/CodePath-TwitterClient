@@ -37,6 +37,7 @@ public abstract class BaseTimelineFragment extends Fragment implements TimelineC
 		setRetainInstance(true);
 		
 		controller = initController();
+		controller.loadInitialData();
 	}
 
 	@Override
@@ -75,8 +76,6 @@ public abstract class BaseTimelineFragment extends Fragment implements TimelineC
 				controller.loadNewerData();
 			}
 		});
-
-		controller.loadInitialData();
 		
 		return rootView;
 	}

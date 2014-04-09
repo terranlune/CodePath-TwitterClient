@@ -60,12 +60,12 @@ public class TimelineTweetsAdapter extends ArrayAdapter<TimelineTweet> {
 			viewLookupCache = (ViewLookupCache) convertView.getTag();
 		}
 		// Populate the data into the template view using the data object
-		viewLookupCache.tvTweetText.setText(tTweet.tweet.text);
-		viewLookupCache.tvUserName.setText(tTweet.tweet.user.name);
+		viewLookupCache.tvTweetText.setText(tTweet.getTweet().text);
+		viewLookupCache.tvUserName.setText(tTweet.getTweet().getUser().name);
 		viewLookupCache.tvTweetTimestamp
-				.setText(getRelativeDateTimeString(tTweet.tweet.created));
-		viewLookupCache.tvUserScreenName.setText("@" + tTweet.tweet.user.screen_name);
-		ImageLoader.getInstance().displayImage(tTweet.tweet.user.profile_image_url,
+				.setText(getRelativeDateTimeString(tTweet.getTweet().created));
+		viewLookupCache.tvUserScreenName.setText("@" + tTweet.getTweet().getUser().screen_name);
+		ImageLoader.getInstance().displayImage(tTweet.getTweet().getUser().profile_image_url,
 				viewLookupCache.ivUserProfileImage);
 		viewLookupCache.vHoleInData.setVisibility(tTweet.holeInData ? View.VISIBLE : View.GONE);
 
@@ -76,7 +76,7 @@ public class TimelineTweetsAdapter extends ArrayAdapter<TimelineTweet> {
 			public void onClick(View v) {
 				TimelineTweet tTweet = (TimelineTweet) v.getTag();
 				Intent intent = new Intent(v.getContext(), UserProfileActivity.class);
-				intent.putExtra("user", tTweet.tweet.user);
+				intent.putExtra("user", tTweet.getTweet().getUser());
 				v.getContext().startActivity(intent);
 			}});
 		
