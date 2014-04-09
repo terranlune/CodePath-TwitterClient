@@ -1,5 +1,6 @@
 package com.johnfuetsch.android.twitter.fragments;
 
+import com.johnfuetsch.android.twitter.controllers.BaseTimelineController;
 import com.johnfuetsch.android.twitter.controllers.HomeTimelineController;
 import com.johnfuetsch.android.twitter.models.Tweet;
 
@@ -16,9 +17,9 @@ public class HomeTimelineFragment extends BaseTimelineFragment {
 	}
 
 	@Override
-	public void setupController() {
+	public BaseTimelineController initController() {
 		homeController = new HomeTimelineController(getActivity(), this);
-		controller = homeController;
+		return homeController;
 	}
 	
 }

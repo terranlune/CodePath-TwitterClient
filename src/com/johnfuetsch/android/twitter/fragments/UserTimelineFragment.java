@@ -2,6 +2,7 @@ package com.johnfuetsch.android.twitter.fragments;
 
 import android.os.Bundle;
 
+import com.johnfuetsch.android.twitter.controllers.BaseTimelineController;
 import com.johnfuetsch.android.twitter.controllers.UserTimelineController;
 import com.johnfuetsch.android.twitter.models.User;
 
@@ -20,8 +21,8 @@ public class UserTimelineFragment extends BaseTimelineFragment {
 	}
 
 	@Override
-	public void setupController() {
+	public BaseTimelineController initController() {
 		User user = (User) getArguments().getSerializable(USER);
-		controller = new UserTimelineController(getActivity(), this, user);
+		return new UserTimelineController(getActivity(), this, user);
 	}
 }

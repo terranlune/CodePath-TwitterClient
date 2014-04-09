@@ -27,7 +27,7 @@ public abstract class BaseTimelineFragment extends Fragment implements TimelineC
 		super();
 	}
 
-	abstract public void setupController();
+	abstract public BaseTimelineController initController();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public abstract class BaseTimelineFragment extends Fragment implements TimelineC
 		// Prevent searching again on rotate
 		setRetainInstance(true);
 		
-		setupController();
+		controller = initController();
 	}
 
 	@Override
