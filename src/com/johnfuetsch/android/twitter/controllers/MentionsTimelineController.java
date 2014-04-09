@@ -20,4 +20,9 @@ public class MentionsTimelineController extends BaseTimelineController {
 				new TweetListResponseHandler(insertPosition));
 	}
 
+	@Override
+	public String getTimelineId() {
+		return "mentions";
+	}
+
 }

@@ -3,6 +3,7 @@ package com.johnfuetsch.android.twitter.controllers;
 import android.content.Context;
 
 import com.johnfuetsch.android.twitter.TwitterClientApp;
+import com.johnfuetsch.android.twitter.models.TimelineTweet;
 import com.johnfuetsch.android.twitter.models.Tweet;
 
 public class HomeTimelineController extends BaseTimelineController {
@@ -23,7 +24,13 @@ public class HomeTimelineController extends BaseTimelineController {
 	}
 
 	public void onPostTweet(Tweet tweet) {
-		tweet.holeInData = true;
-		tweetsAdapter.insert(tweet, 0);
+		TimelineTweet tTweet = new TimelineTweet(tweet, getTimelineId());
+		tTweet.holeInData = true;
+		tTweetsAdapter.insert(tTweet, 0);
+	}
+
+	@Override
+	public String getTimelineId() {
+		return "home";
 	}
 }

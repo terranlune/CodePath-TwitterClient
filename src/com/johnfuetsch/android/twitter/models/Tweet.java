@@ -1,10 +1,8 @@
 package com.johnfuetsch.android.twitter.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,9 +17,6 @@ public class Tweet implements Serializable {
 	public String text;
 	public User user;
 	public long created;
-	public boolean holeInData; // When true, indicates that there are
-								// tweets after this in the timeline
-								// which have not yet been processed
 
 	@SuppressWarnings("deprecation")
 	public static Tweet fromJson(JSONObject jsonObject) {
@@ -32,36 +27,12 @@ public class Tweet implements Serializable {
 			tweet.text = jsonObject.getString("text");
 			tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
 			tweet.created = Date.parse(jsonObject.getString("created_at"));
-			tweet.holeInData = false;
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
 		}
 		// Return new object
 		return tweet;
-	}
-
-	public static ArrayList<Tweet> fromJson(JSONArray jsonArray) {
-
-		ArrayList<Tweet> tweets = new ArrayList<Tweet>(jsonArray.length());
-
-		// Process each result in json array, decode and convert to tweet object
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject tweetJson = null;
-			try {
-				tweetJson = jsonArray.getJSONObject(i);
-			} catch (Exception e) {
-				e.printStackTrace();
-				continue;
-			}
-
-			Tweet tweet = Tweet.fromJson(tweetJson);
-			if (tweet != null) {
-				tweets.add(tweet);
-			}
-		}
-
-		return tweets;
 	}
 
 }

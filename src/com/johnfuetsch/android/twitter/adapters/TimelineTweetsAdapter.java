@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 import com.johnfuetsch.android.twitter.R;
 import com.johnfuetsch.android.twitter.activities.UserProfileActivity;
-import com.johnfuetsch.android.twitter.models.Tweet;
+import com.johnfuetsch.android.twitter.models.TimelineTweet;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class TweetsAdapter extends ArrayAdapter<Tweet> {
+public class TimelineTweetsAdapter extends ArrayAdapter<TimelineTweet> {
 
 	private static class ViewLookupCache {
 		TextView tvUserScreenName;
@@ -28,15 +28,15 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 		View vHoleInData;
 	}
 
-	public TweetsAdapter(Context context, ArrayList<Tweet> tweets) {
-		super(context, R.layout.tweet_item, tweets);
+	public TimelineTweetsAdapter(Context context, ArrayList<TimelineTweet> tTweets) {
+		super(context, R.layout.tweet_item, tTweets);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		// Get the data item for this position
-		Tweet tweet = getItem(position);
+		TimelineTweet tTweet = getItem(position);
 
 		// Check if an existing view is being reused, otherwise inflate the view
 		ViewLookupCache viewLookupCache; // view lookup cache stored in tag
@@ -60,23 +60,23 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 			viewLookupCache = (ViewLookupCache) convertView.getTag();
 		}
 		// Populate the data into the template view using the data object
-		viewLookupCache.tvTweetText.setText(tweet.text);
-		viewLookupCache.tvUserName.setText(tweet.user.name);
+		viewLookupCache.tvTweetText.setText(tTweet.tweet.text);
+		viewLookupCache.tvUserName.setText(tTweet.tweet.user.name);
 		viewLookupCache.tvTweetTimestamp
-				.setText(getRelativeDateTimeString(tweet.created));
-		viewLookupCache.tvUserScreenName.setText("@" + tweet.user.screen_name);
-		ImageLoader.getInstance().displayImage(tweet.user.profile_image_url,
+				.setText(getRelativeDateTimeString(tTweet.tweet.created));
+		viewLookupCache.tvUserScreenName.setText("@" + tTweet.tweet.user.screen_name);
+		ImageLoader.getInstance().displayImage(tTweet.tweet.user.profile_image_url,
 				viewLookupCache.ivUserProfileImage);
-		viewLookupCache.vHoleInData.setVisibility(tweet.holeInData ? View.VISIBLE : View.GONE);
+		viewLookupCache.vHoleInData.setVisibility(tTweet.holeInData ? View.VISIBLE : View.GONE);
 
-		viewLookupCache.ivUserProfileImage.setTag(tweet);
+		viewLookupCache.ivUserProfileImage.setTag(tTweet);
 		viewLookupCache.ivUserProfileImage.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Tweet tweet = (Tweet) v.getTag();
+				TimelineTweet tTweet = (TimelineTweet) v.getTag();
 				Intent intent = new Intent(v.getContext(), UserProfileActivity.class);
-				intent.putExtra("user", tweet.user);
+				intent.putExtra("user", tTweet.tweet.user);
 				v.getContext().startActivity(intent);
 			}});
 		

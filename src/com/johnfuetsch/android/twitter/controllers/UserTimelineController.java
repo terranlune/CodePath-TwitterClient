@@ -23,6 +23,11 @@ public class UserTimelineController extends BaseTimelineController {
 		TwitterClientApp.getRestClient().getUserTimeline(user.screen_name, sinceId, maxId,
 				new TweetListResponseHandler(insertPosition));
 	}
+
+	@Override
+	public String getTimelineId() {
+		return "user?" + user.id;
+	}
 	
 
 }

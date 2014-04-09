@@ -9,13 +9,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.johnfuetsch.android.twitter.TwitterClientApp;
-import com.johnfuetsch.android.twitter.adapters.TweetsAdapter;
-import com.johnfuetsch.android.twitter.models.Tweet;
+import com.johnfuetsch.android.twitter.adapters.TimelineTweetsAdapter;
+import com.johnfuetsch.android.twitter.models.TimelineTweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public abstract class BaseTimelineController {
 
-	protected TweetsAdapter tweetsAdapter;
+	protected TimelineTweetsAdapter tTweetsAdapter;
 	protected boolean busy = false;
 	protected Context mContext;
 	protected TimelineControllerCallback mCallback;
@@ -23,8 +23,8 @@ public abstract class BaseTimelineController {
 	public BaseTimelineController(Context context, TimelineControllerCallback callback) {
 		mContext = context;
 		mCallback = callback;
-		ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-		tweetsAdapter = new TweetsAdapter(mContext, tweets);
+		ArrayList<TimelineTweet> tTweets = new ArrayList<TimelineTweet>();
+		tTweetsAdapter = new TimelineTweetsAdapter(mContext, tTweets);
 	}
 	
 	public interface TimelineControllerCallback {
@@ -33,8 +33,8 @@ public abstract class BaseTimelineController {
 		public void onError(JSONObject error);
 	}
 
-	public TweetsAdapter getAdapter() {
-		return tweetsAdapter;
+	public TimelineTweetsAdapter getAdapter() {
+		return tTweetsAdapter;
 	}
 	
 	protected void loadData(String sinceId, String maxId, int insertPosition) {
@@ -47,17 +47,17 @@ public abstract class BaseTimelineController {
 	}
 
 	public boolean loadOlderData() {
-		Tweet oldestTweet = tweetsAdapter.getItem(tweetsAdapter.getCount() - 1);
-		String maxId = oldestTweet.id;
-		loadData(null, maxId, tweetsAdapter.getCount());
+		TimelineTweet oldestTimelineTweet = tTweetsAdapter.getItem(tTweetsAdapter.getCount() - 1);
+		String maxId = oldestTimelineTweet.tweet.id;
+		loadData(null, maxId, tTweetsAdapter.getCount());
 		return true;
 	}
 
 	public void loadNewerData() {
 		String latestId = null;
-		if (tweetsAdapter.getCount() > 0) {
-			Tweet latestTweet = tweetsAdapter.getItem(0);
-			latestId = latestTweet.id;
+		if (tTweetsAdapter.getCount() > 0) {
+			TimelineTweet latestTimelineTweet = tTweetsAdapter.getItem(0);
+			latestId = latestTimelineTweet.tweet.id;
 		}
 		loadData(latestId, null, 0);
 	}
@@ -68,40 +68,40 @@ public abstract class BaseTimelineController {
 
 	public boolean fillInHoles(int minPosition, int maxPosition) {
 		for (int i = minPosition; i < maxPosition; ++i) {
-			Tweet tweet = (Tweet) tweetsAdapter.getItem(i);
-			if (tweet.holeInData) {
+			TimelineTweet tTweet = (TimelineTweet) tTweetsAdapter.getItem(i);
+			if (tTweet.holeInData) {
 				String olderTweetId = null;
-				if (i + 1 < tweetsAdapter.getCount()) {
-					Tweet olderTweet = (Tweet) tweetsAdapter.getItem(i + 1);
-					olderTweetId = olderTweet.id;
+				if (i + 1 < tTweetsAdapter.getCount()) {
+					TimelineTweet olderTimelineTweet = (TimelineTweet) tTweetsAdapter.getItem(i + 1);
+					olderTweetId = olderTimelineTweet.tweet.id;
 				}
-				loadData(olderTweetId, tweet.id, i + 1);
+				loadData(olderTweetId, tTweet.tweet.id, i + 1);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	protected void insertTweets(ArrayList<Tweet> tweets, int position) {
+	protected void insertTweets(ArrayList<TimelineTweet> tTweets, int position) {
 		int i = 0;
-		Tweet tweet = null;
-		for (; i < tweets.size(); ++i) {
-			tweet = tweets.get(i);
-			tweetsAdapter.insert(tweet, position + i);
+		TimelineTweet tTweet = null;
+		for (; i < tTweets.size(); ++i) {
+			tTweet = tTweets.get(i);
+			tTweetsAdapter.insert(tTweet, position + i);
 		}
 
 		// If we get any results, then it's possible there are more to come.
 		// Indicate this by setting the "holeInData" attribute on the last
 		// tweet.
-		if (tweet != null) {
-			tweet.holeInData = true;
+		if (tTweet != null) {
+			tTweet.holeInData = true;
 		}
 
 		// Since we've successfully added data after maxId, that
 		// Tweet no longer has a hole in the data
 		if (position - 1 >= 0) {
-			tweetsAdapter.getItem(position - 1).holeInData = false;
-			tweetsAdapter.notifyDataSetChanged();
+			tTweetsAdapter.getItem(position - 1).holeInData = false;
+			tTweetsAdapter.notifyDataSetChanged();
 		}
 	}
 
@@ -131,9 +131,9 @@ public abstract class BaseTimelineController {
 		@Override
 		public void onSuccess(JSONArray jsonTweets) {
 
-			ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
+			ArrayList<TimelineTweet> tTweets = TimelineTweet.fromJson(jsonTweets, getTimelineId());
 
-			insertTweets(tweets, position);
+			insertTweets(tTweets, position);
 
 			returnNetworkLock();
 		}
@@ -148,4 +148,5 @@ public abstract class BaseTimelineController {
 
 	}
 
+	public abstract String getTimelineId();
 }
